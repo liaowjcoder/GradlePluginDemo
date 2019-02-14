@@ -9,9 +9,12 @@ import com.android.build.api.transform.TransformException
 import com.android.build.api.transform.TransformInput
 import com.android.build.api.transform.TransformInvocation
 import com.android.build.gradle.internal.pipeline.TransformManager
+import com.example.plugin.transform.visitor.MyClassVisitor
+import groovy.io.FileType
+import org.objectweb.asm.ClassReader
+import org.objectweb.asm.ClassVisitor
+import org.objectweb.asm.ClassWriter
 import org.apache.commons.codec.digest.DigestUtils
-import org.gradle.internal.FileUtils;
-
 
 class MyTransform extends Transform {
 
@@ -46,9 +49,22 @@ class MyTransform extends Transform {
 
                 transformInput.directoryInputs.each { DirectoryInput directoryInput ->
                     if (directoryInput.file.isDirectory()) {
-                        directoryInput.file.eachFileRecurse { File file ->
-                            // ...对目录进行插入字节码
-                            println "dir = " + file
+
+                        directoryInput.file.traverse(type: FileType.FILES, nameFilter: ~/.*\.class/) {
+                            File classFile ->
+
+                                def name = classFile.name;
+                                if (name.endsWith(".class") && !name.startsWith("R\$") && !"R.class".equals(name) && !"BuildConfig.class".equals(name)) {
+
+                                    println("要操作的类：" + name)
+
+                                    ClassReader cr = new ClassReader(classFile.bytes)
+                                    ClassWriter cw = new ClassWriter(cr,ClassWriter.COMPUTE_MAXS)
+                                    ClassVisitor cv = new MyClassVisitor(cw)
+                                    cr.accept(cv, ClassReader.EXPAND_FRAMES)
+                                }
+
+
                         }
                     }
 
