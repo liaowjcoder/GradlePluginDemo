@@ -8,6 +8,8 @@ import java.lang.annotation.Target
 
 
 @Retention(RetentionPolicy.CLASS)
-@Target(ElementType.METHOD)
-public @interface MyAnnotation{
+@Target(value = ElementType.TYPE)
+@interface MyAnnotation {
+
+    Class getClz();
 }

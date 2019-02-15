@@ -1,16 +1,16 @@
 package com.example.plugin;
 
+
 import com.example.plugin.annotation.MyAnnotation;
 
 /**
  * Created by zeal on 2019/2/13.
  */
-public class MyDemo {
+@MyAnnotation(getClz = IDemo.class)
+public class MyDemo implements IDemo {
 
-
-    @MyAnnotation
-    public void helloASM() {
-
+    @Override
+    public void demo() {
+        System.out.println("demo....");
     }
-
 }

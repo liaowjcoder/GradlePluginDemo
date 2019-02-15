@@ -10,10 +10,8 @@ class MyTransformPlugin implements Plugin<Project> {
     void apply(Project project) {
 
 
-        AppExtension appExtension =   project.extensions.getByType(AppExtension.class)
+        AppExtension appExtension = project.extensions.getByType(AppExtension.class)
 
         appExtension.registerTransform(new MyTransform())
-
-
     }
 }
